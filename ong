@@ -1,0 +1,334 @@
+#Como criar um Banco de Dados
+create database ong;
+
+hashtag#Como usar o Banco de Dados
+use ong;
+
+hashtag#Como excluir o Banco de Dados
+drop database ong;
+
+hashtag#Criação da Abrigo
+hashtag#Tabelas cadastrais (Dimensão)
+create table abrigo(
+id_abrigo bigint auto_increment,
+nome varchar (100),
+endereco varchar (200),
+telefone varchar (20),
+email varchar (100),
+constraint pk_id_abrigo primary key (id_abrigo)
+);
+
+hashtag#Consulta da tabela abrigo
+select*from abrigo;
+
+create table adotante(
+id_ad bigint not null auto_increment,
+nome_ad varchar(200) not null,
+telefone_ad varchar (20),
+email_ad varchar (100),
+endereco varchar(200),
+constraint pk_id_ad primary key (id_ad)
+);
+
+select * from adotante;
+
+create table animal(
+id_animal bigint auto_increment,
+especie varchar(50),
+raca varchar (50),
+cor varchar (50),
+kg numeric (10,2),
+idade int,
+sexo varchar (20),
+porte varchar (20),
+id_abrigo bigint,
+id_ad bigint,
+constraint pk_id_animal primary key (id_animal),
+constraint fk_id_abrigo foreign key (id_abrigo) references abrigo(id_abrigo),
+constraint fk_id_ad foreign key (id_ad) references adotante(id_ad)
+);
+
+select * from animal;
+
+create table funcionario( 
+id_func bigint auto_increment,
+nome varchar (100),
+tel varchar (20),
+cpf varchar(20),
+id_abrigo_func bigint,
+constraint pk_id_func primary key (id_func),
+constraint fk_id_abrigo_func foreign key (id_abrigo_func) references abrigo(id_abrigo)
+);
+
+ select * from funcionario;
+ 
+ hashtag#Tabela de Histórico (Fato)
+ create table possui (
+ num_adocao bigint unique,
+ dt_adc date,
+ id_animal_ong bigint ,
+ id_abrigo_ong bigint,
+ id_adotante_ong bigint,
+ constraint pk_num_adocao primary key(num_adocao),
+ constraint fk_id_animal_ong foreign key (id_animal_ong) references animal(id_animal),
+ constraint fk_id_abrigo_ong foreign key(id_abrigo_ong) references abrigo(id_abrigo),
+ constraint fk_id_adotante_ong foreign key (id_adotante_ong) references adotante(id_ad)
+ );
+
+select * from possui;
+ 
+create table alimento(
+id_racao int not null,
+nome varchar(50),
+dt_validade date,
+estoque int,
+id_abrigo_abg bigint,
+constraint pk_id_racao primary key (id_racao),
+constraint fk_id_abg foreign key (id_abrigo_abg) references abrigo (id_abrigo)
+);
+
+select * from alimento;
+ 
+create table consumo (
+id_consumo int auto_increment,
+data_consumo date,
+valor_consumo numeric (6,2),
+id_abrigo_consumo bigint,
+constraint pk_id_consumo primary key(id_consumo),
+constraint fk_id_abrigo_consumo foreign key (id_abrigo_consumo) references abrigo(id_abrigo)
+);
+ 
+select * from consumo;
+ 
+hashtag#Como fazer alterações nas tabelas
+/*alter table animal add column id_ad bigint;
+alter table animal add constraint fk_id_ad foreign key (id_ad) references adotante(id_ad);
+alter table animal change column kg kg varchar(20);
+alter table animal change column idade idade varchar (20);
+alter table abrigo drop column endereco;
+alter table abrigo add column endereco varchar (200);
+alter table abrigo add column funcionarios varchar(100);
+alter table adotante drop column endereco_ad;
+alter table funcionario modify nome varchar (150) not null;*/
+
+hashtag#Inserindo valores nas Tabelas
+#---TABELA ABRIGO---
+insert into abrigo (nome,endereco,telefone,email) values ('Gatópoles' , 'Rua dos Gatos - 456','11950422058','gatopoles@ong.com');
+insert into abrigo (nome,endereco,telefone,email) values ('Cãolândia' , 'Rua dos Cães - 999','11950422098','caolandia@ong.com');
+insert into abrigo (nome,endereco,telefone,email) values ('Focinhos Felizes' , 'Rua dos Focinhos - 333','1195042358','focinhos.felizes@ong.com');
+insert into abrigo (nome,endereco,telefone,email) values ('Projeto Acolher' , 'Rua das Violetas - 11','15780422058','projetoacolhers@ong.com');
+insert into abrigo (nome,endereco,telefone,email) values ('Pata Voluntária' , 'Rua dos Lírios - 22','21780422098','patavoluntaria@ong.com');
+
+#---TABELA ADOTANTE---
+insert into adotante (nome_ad, telefone_ad, email_ad, endereco) values ('Samara','119504025','samara@teste.com','Rua 1');
+insert into adotante (nome_ad, telefone_ad, email_ad, endereco) values ('Gabriel','119503025','gabriel@teste.com','Rua 2');
+insert into adotante (nome_ad, telefone_ad, email_ad, endereco) values ('Luana','119504038','luana@teste.com','Rua 3');
+insert into adotante (nome_ad, telefone_ad, email_ad, endereco) values ('Francisca Oliveira','159504025','francisca@teste.com','Rua 1');
+insert into adotante (nome_ad, telefone_ad, email_ad, endereco) values ('Fernanda Melo','319503025','fernanda@teste.com','Rua 2');
+
+#---TABELA ANIMAL---
+insert into animal (id_animal,especie,raca,cor,kg,idade,sexo,porte,id_abrigo,id_ad) values 
+(1,'Gato','SRD','Preto','10kg','2 meses','F','Pequeno',1,1);
+insert into animal (id_animal,especie,raca,cor,kg,idade,sexo,porte,id_abrigo,id_ad) values 
+(2,'Cachorro','Labrador','branco','20kg','2 meses','F','Grande',1,2);
+insert into animal (id_animal,especie,raca,cor,kg,idade,sexo,porte,id_abrigo,id_ad) values 
+(3,'Gato','Belga','Cinza','5kg','1 Ano','M','Medio',1,3);
+insert into animal (especie,raca,cor,kg,idade,sexo,porte,id_abrigo,id_ad) values 
+('Cachorro','Pastor Alemão','Preto e Bege','20kg','2 anos','F','Grande',1,1);
+insert into animal (especie,raca,cor,kg,idade,sexo,porte,id_abrigo,id_ad) values 
+('Cachorro','Buldog','Tigrado','5kg','3 meses','M','Médio',1,2);
+
+#---TABELA FUNCIONARIO---
+insert into funcionario (nome,tel,cpf,id_abrigo_func) values ('Kenny',11950422065,458655988-84,1);
+insert into funcionario (nome,tel,cpf,id_abrigo_func) values ('Kaio',11950422068,458656788-02,2);
+insert into funcionario (nome,tel,cpf,id_abrigo_func) values ('Flavio',11950422065,458655759-78,3);
+insert into funcionario (nome,tel,cpf,id_abrigo_func) values ('Gabriel',11950422065,458655759-78,3);
+insert into funcionario (nome,tel,cpf,id_abrigo_func) values ('Luna de Souza',126750422065,128655988-84,1);
+
+#---TABELA POSSUI---
+insert into possui (num_adocao, dt_adc, id_animal_ong, id_abrigo_ong, id_adotante_ong ) values(1,'2022-09-25',1,1,1);
+insert into possui (num_adocao, dt_adc, id_animal_ong, id_abrigo_ong, id_adotante_ong ) values(2,'2022-10-14',2,2,2);
+insert into possui (num_adocao, dt_adc, id_animal_ong, id_abrigo_ong, id_adotante_ong ) values(3,'2022-10-17',3,3,3);
+insert into possui (num_adocao, dt_adc, id_animal_ong, id_abrigo_ong, id_adotante_ong ) values(4,'2022-11-5',4,4,4);
+insert into possui (num_adocao, dt_adc, id_animal_ong, id_abrigo_ong, id_adotante_ong ) values(5,'2022-11-09',5,5,5);
+
+#---TABELA ALIMENTO---
+insert into alimento (id_racao, nome, dt_validade, estoque, id_abrigo_abg) values (1, 'Pro Plan', '2023-10-04', 456, 1);
+insert into alimento (id_racao, nome, dt_validade, estoque, id_abrigo_abg) values (2, 'Royal Canin', '2023-11-25', 651, 2);
+insert into alimento (id_racao, nome, dt_validade, estoque, id_abrigo_abg) values (3, 'Golden', '2023-09-14', 258, 3);
+insert into alimento (id_racao, nome, dt_validade, estoque, id_abrigo_abg) values (4, 'Dog Chow', '2023-08-17', 753, 4);
+insert into alimento (id_racao, nome, dt_validade, estoque, id_abrigo_abg) values (5, 'Equilíbrio', '2023-07-17', 951, 5);
+
+#---TABELA CONSUMO---
+insert into consumo (id_consumo, data_consumo, valor_consumo, id_abrigo_consumo) values (1, '2023-06-02', '10kg', 1);
+insert into consumo (id_consumo, data_consumo, valor_consumo, id_abrigo_consumo) values (2, '2023-05-30', '90kg', 2);
+insert into consumo (id_consumo, data_consumo, valor_consumo, id_abrigo_consumo) values (3, '2023-05-31', '47kg', 3);
+insert into consumo (id_consumo, data_consumo, valor_consumo, id_abrigo_consumo) values (4, '2023-04-02', '80kg', 4);
+insert into consumo (id_consumo, data_consumo, valor_consumo, id_abrigo_consumo) values (5, '2023-02-07', '55kg', 5);
+
+hashtag#update(atualização) na tabela animal
+/*update animal set id_ad = 1 where id_animal = 1;
+update animal set id_ad = 2 where id_animal = 2;
+update animal set id_ad = 3 where id_animal = 3;
+update animal set id_abrigo = 2 where id_ad =2; 
+update animal set id_abrigo = 3 where id_ad =3;*/
+
+hashtag#update(atualização) na tabela possui
+/*update possui set dt_adc= '2020-01-05 02:15:07' where id_animal_ong=1; 
+update possui set dt_adc= '2021-02-04 06:20:15' where id_animal_ong=2; 
+update possui set dt_adc= '2022-03-06 10:20:35' where id_animal_ong=3;*/
+
+hashtag#Select Específico 
+/*select * from animal where especie = 'gato' and cor = 'cinza';
+select * from adotante where nome = 'Samara' and telefone_ad = '119504025';
+select * from abrigo where nome = 'Gatópoles' and endereco = 'Rua dos Gatos - 456';*/
+
+hashtag#Select para consultar campos que estão em mais de uma tabela (junção de tabelas)
+select a.nome_ad as nome_adotante, ab.nome as nome_abrigo
+ from adotante as a, abrigo as ab, possui as p
+ where a.id_ad = p.id_adotante_ong 
+ and ab.id_abrigo = p.id_abrigo_ong 
+ and month(p.dt_adc) = '11'
+order by nome_adotante;
+
+hashtag#Select para consultar campos que estão em mais de uma tabela (junção de tabelas)
+select an.especie as especie_animal, ab.nome as nome_abrigo
+ from animal as an, abrigo as ab, possui as p
+ where ab.id_abrigo = p.id_animal_ong
+ and an.id_animal = p.id_abrigo_ong 
+ and an.especie = (especie);
+
+hashtag#Select para consultar campos que estão em mais de uma tabela (junção de tabelas),mas usando o INNER JOIN
+SELECT a.nome AS abrigo, ad.nome_ad AS adotante , animal.id_animal AS animal
+ FROM possui AS p 
+ INNER JOIN abrigo AS a ON a.id_abrigo = p.id_abrigo_ong
+ INNER JOIN adotante AS ad ON ad.id_ad = p.id_adotante_ong
+ INNER JOIN animal as animal on animal.id_animal = p.id_animal_ong;
+
+hashtag#Select para consultar campos que estão em mais de uma tabela (junção de tabelas),mas usando o INNER JOIN
+SELECT a.nome AS nome_abrigo, an.especie AS especie_animal
+ FROM possui AS p 
+ INNER JOIN abrigo AS a ON a.id_abrigo = p.id_abrigo_ong
+ INNER JOIN animal as an on an.id_animal = p.id_animal_ong;
+
+hashtag#Criando views abrangendo dados das tabelas com filtragem
+create view RelacaoAbrigoAdotante as
+SELECT a.nome AS abrigo, ad.nome_ad AS adotante , animal.id_animal AS animal
+ FROM possui AS p 
+ INNER JOIN abrigo AS a ON a.id_abrigo = p.id_abrigo_ong
+ INNER JOIN adotante AS ad ON ad.id_ad = p.id_adotante_ong
+ INNER JOIN animal as animal on animal.id_animal = p.id_animal_ong;
+
+select * from RelacaoAbrigoAdotante;
+
+hashtag#Criando views abrangendo dados das tabelas com filtragem
+create view RelacaoAbrigoAnimal as 
+SELECT a.nome AS nome_abrigo, an.especie AS especie_animal
+ FROM possui AS p 
+ INNER JOIN abrigo AS a ON a.id_abrigo = p.id_abrigo_ong
+ INNER JOIN animal as an on an.id_animal = p.id_animal_ong;
+
+select * from RelacaoAbrigoAnimal;
+
+hashtag#Criando procedimento com passagem de parâmetros
+DELIMITER //
+CREATE PROCEDURE ConsultaTotalAnimal(in NomeEspecie varchar(50), out Total int)
+BEGIN
+ select count(*) into Total from animal 
+ where especie like concat ("%", NomeEspecie, "%");
+END//
+
+call ConsultaTotalAnimal ("Ca", @Total);
+select @Total;
+
+DELIMITER //
+CREATE function fConsultaTotalAnimal(parte_nome varchar(50)) returns int
+BEGIN
+declare total int;
+ select count(*) into total from animal 
+ where especie like concat ("%", parte_nome, "%");
+ return total;
+END; //
+
+select fConsultaTotalAnimal ("Ga");
+
+DELIMITER //
+CREATE FUNCTION fConsultaAnimais(nome_especie varchar(50)) returns int
+BEGIN
+ declare total int;
+ select count(*) into total from animal 
+ where especie like concat("%",nome_especie, "%");
+ return total;
+ END; //
+
+DELIMITER //
+CREATE FUNCTION fConsultaAbrigos(nome_abrigo varchar(100)) returns int
+BEGIN
+ declare total int;
+ select count(*) into total from abrigo
+ where nome like concat("%",nome_abrigo, "%");
+ return total;
+ END; //
+
+hashtag#Criando procedimento sem passagem de parâmetros
+DELIMITER //
+CREATE FUNCTION fConsultaAb( ) returns int
+BEGIN
+ declare total int;
+ select count(*) into total from abrigo;
+ return total;
+ END; //
+ 
+select fConsultaAb();
+
+# Criando um procedimento para inserção de dados usando estrutura condicional para executar o Commit e o Rollback
+DELIMITER //
+CREATE PROCEDURE CadastroAnimais()
+ BEGIN
+ DECLARE erro TINYINT DEFAULT FALSE;
+ DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET erro = true;
+ INSERT INTO animal(especie, raca, cor, kg, idade, sexo, porte,id_abrigo,id_ad) VALUES 
+ ("cachoro","Jack Russell Terrier", "Caramelo", "10kg", "2" , "M" ,"Pequeno",1,1),
+ ("Gato","Sphynx","Sem Pelagem","5kg", "5", "F" ,"Pequeno",2,2),
+ ('Gato','SRD','Preto','2kg','1 mes','F','Pequeno',3,3);
+
+ IF erro = FALSE THEN
+ COMMIT;
+ SELECT "Transação efetivada com sucesso" AS ResultadoTransacao;
+ ELSE
+ ROLLBACK;
+ SELECT "Erro na realização da transação" AS ResultadoTransacao;
+ END IF;
+ END//
+ 
+call CadastroAnimais();
+
+hashtag#Criando Índices
+CREATE INDEX idx_adotantes ON adotante (id_ad);
+CREATE INDEX idx_animais ON animal (id_animal);
+CREATE INDEX idx_abrigo ON abrigo (id_abrigo);
+CREATE INDEX idx_alimento ON alimento (dt_validade);
+
+show indexes from abrigo;
+
+hashtag#Criando um select que usa um subselect
+Select abrigo.nome, (Select count(*) from adotante) as total_adotante 
+from abrigo,adotante,possui 
+where possui.id_adotante_ong = adotante.id_ad 
+and possui.id_abrigo_ong =abrigo.id_abrigo;
+
+/*call fConsultaAb;
+select distinct*/
+
+hashtag#Como criar o backup nas Tabelas
+create table abrigobackup(
+id_abrigo bigint auto_increment,
+nome varchar (100),
+endereco varchar (200),
+telefone varchar (20),
+email varchar (100),
+constraint pk_id_abrigo primary key (id_abrigo)
+);
+
+insert into abrigobackup (select * from abrigo);
+select * from abrigobackup;
